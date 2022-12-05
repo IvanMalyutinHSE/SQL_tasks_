@@ -1,0 +1,41 @@
+SELECT * 
+FROM places;
+SELECT * 
+FROM reviews;
+--
+SELECT * FROM places 
+WHERE price_point = '$' OR price_point = '$$';
+--
+SELECT places.name, places.average_rating, reviews.username, reviews.rating, reviews.review_date, reviews.note FROM places 
+JOIN reviews 
+  ON places.id = reviews.place_id
+WHERE total_reviews >= 1
+LIMIT 5;
+--
+SELECT places.name, places.average_rating, reviews.username, reviews.rating, reviews.review_date, reviews.note FROM places 
+LEFT JOIN reviews 
+  ON places.id = reviews.place_id
+WHERE total_reviews >= 1
+LIMIT 5;
+--
+SELECT places.id, places.name
+FROM places 
+JOIN reviews 
+   ON places.id = reviews.place_id
+WHERE reviews.place_id IS NULL;
+--
+WITH reviews2k20 as (
+  SELECT * FROM reviews 
+  WHERE strftime("%Y", review_date) = 2020
+)
+SELECT * FROM reviews2k20 
+JOIN places 
+  ON reviews2k20.place_id = places.id;
+--
+SELECT COUNT(*), reviews.username FROM places 
+JOIN reviews 
+  ON places.id = place_id
+WHERE reviews.rating < average_rating
+GROUP BY username
+ORDER BY COUNT(*) DESC
+LIMIT 5;
